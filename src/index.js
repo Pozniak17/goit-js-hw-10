@@ -1,7 +1,9 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
+import Notiflix, { Notify } from 'notiflix';
 
 import { buildMarkup } from './js/buildMarkup';
+import { createCard } from './js/buildMarkup';
 import { fetchCountries } from './js/fetchCountries';
 
 const refs = {
@@ -20,17 +22,30 @@ refs.input.addEventListener('input', debounce(onInputTarget, DEBOUNCE_DELAY));
 // функція інпута
 function onInputTarget(evt) {
   evt.preventDefault();
+
+  cleanResult();
   // значення з інпуту. метод trim() видаляє останні і попередні пробіли
   const nameCountryInInput = evt.target.value.trim();
 
   // передаємо значення з інпуту в функцію пошуку країни
   // при успішному запиті виконуємо в then функцію створення розмітки
   fetchCountries(nameCountryInInput).then(country => {
-    refs.countryList.innerHTML = buildMarkup(country);
+    if (country.length > 10) {
+      Notify.info('Too many matches found. Please enter a more specific name.');
+    } else if (country.length >= 2 && country.length <= 10) {
+      refs.countryList.innerHTML = buildMarkup(country);
+    } else if (country.length === 1) {
+      refs.countryInfo.insertAdjacentHTML('beforeend', createCard(country));
+    }
   });
 
   // якщо пустий рядок, не виконувати пошук
   if (nameCountryInInput === '') {
     return;
   }
+}
+
+function cleanResult() {
+  refs.countryInfo.innerHTML = '';
+  refs.countryList.innerHTML = '';
 }
