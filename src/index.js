@@ -27,17 +27,26 @@ function onInputTarget(evt) {
   // значення з інпуту. метод trim() видаляє останні і попередні пробіли
   const nameCountryInInput = evt.target.value.trim();
 
+  // якщо пустий рядок, не виконувати пошук
+  if (nameCountryInInput === '') {
+    return;
+  }
+
   // передаємо значення з інпуту в функцію пошуку країни
   // при успішному запиті виконуємо в then функцію створення розмітки
-  fetchCountries(nameCountryInInput).then(country => {
-    if (country.length > 10) {
-      Notify.info('Too many matches found. Please enter a more specific name.');
-    } else if (country.length >= 2 && country.length <= 10) {
-      refs.countryList.innerHTML = buildMarkup(country);
-    } else if (country.length === 1) {
-      refs.countryInfo.insertAdjacentHTML('beforeend', createCard(country));
-    }
-  });
+  fetchCountries(nameCountryInInput)
+    .then(country => {
+      if (country.length > 10) {
+        Notify.info(
+          'Too many matches found. Please enter a more specific name.'
+        );
+      } else if (country.length >= 2 && country.length <= 10) {
+        refs.countryList.innerHTML = buildMarkup(country);
+      } else if (country.length === 1) {
+        refs.countryInfo.insertAdjacentHTML('beforeend', createCard(country));
+      }
+    })
+    .catch(onError);
 
   // якщо пустий рядок, не виконувати пошук
   if (nameCountryInInput === '') {
@@ -45,7 +54,14 @@ function onInputTarget(evt) {
   }
 }
 
+// функція очистки списків
 function cleanResult() {
   refs.countryInfo.innerHTML = '';
   refs.countryList.innerHTML = '';
+}
+
+// функція для обробки помилки
+function onError() {
+  cleanResult();
+  Notify.failure('Oops, there is no country with that name');
 }
