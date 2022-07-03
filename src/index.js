@@ -1,6 +1,9 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
 
+import { fetchCountries } from './js/fetchCountries';
+import { buildMarkup } from './js/buildMarkup';
+
 const refs = {
   input: document.querySelector('#search-box'),
   countryList: document.querySelector('.country-list'),
@@ -30,34 +33,4 @@ function onInputTarget(evt) {
   if (nameCountryInInput === '') {
     return;
   }
-}
-
-// функція запиту країн
-function fetchCountries(name) {
-  // властивості для фільтру
-  const params = 'name,capital,population,flags,languages';
-  // посилання для пошуку
-  const url = `https://restcountries.com/v3.1/name/${name}?fields=${params}`;
-  0;
-
-  return fetch(url).then(response => {
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return response.json();
-  });
-  // .then(data => console.log(data))
-  // .catch(error => console.log(error));
-}
-
-// функція створення розмітки
-function buildMarkup(countries) {
-  return countries
-    .map(
-      country => `<li style="display: flex; align-items: center">
-            <img src="${country.flags.svg}" alt="flag" width="40px" />
-            <b style="margin-left: 5px">${country.name.official}</b>
-          </li>`
-    )
-    .join('');
 }
