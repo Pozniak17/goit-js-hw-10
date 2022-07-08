@@ -4,7 +4,6 @@ export const fetchCountries = name => {
   const params = 'name,capital,population,flags,languages';
   // посилання для пошуку
   const url = `https://restcountries.com/v3.1/name/${name}?fields=${params}`;
-  0;
 
   return fetch(url).then(response => {
     if (!response.ok) {
