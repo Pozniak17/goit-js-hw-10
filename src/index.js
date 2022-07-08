@@ -47,11 +47,6 @@ function onInputTarget(evt) {
       }
     })
     .catch(onError);
-
-  // якщо пустий рядок, не виконувати пошук
-  if (nameCountryInInput === '') {
-    return;
-  }
 }
 
 // функція очистки списків
